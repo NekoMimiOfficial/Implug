@@ -26,10 +26,16 @@ class Loader:
         try:
             shutil.rmtree(f"{self.ddir}__pycache__/")
         except Exception as e:
-            print(str(e))
             pass
-
-        plugin = import_module(f"{self.ddir}{module}")
+        
+        ldir = self.ddir.replace("/", ".")
+        module = module[:-3]
+        try:
+            plugin = import_module(f"{ldir}{module}")
+        except Exception as e:
+            plugin = import_module(f"{ldir}{module}")
+        finally:
+            plugin = import_module(f"{ldir}{module}")
         return plugin #type: ignore
 
     def load(self, module):
@@ -49,16 +55,16 @@ class Loader:
             if isdir(f"{self.ddir}{val}"):
                 ls.pop(i)
 
-            if val.startswith("_"):
+            elif val.startswith("_"):
                 ls.pop(i)
 
-            if not val.endswith(".py"):
+            elif not val.endswith(".py"):
                 ls.pop(i)
-
+            
             i += 1
         
         for plugin in ls:
-            cwp = self._load2plugin(f"{self.ddir}{plugin}")
+            cwp = self._load2plugin(plugin)
             cwp.Initialize()
 
 def builtin_init(pluginclass):
