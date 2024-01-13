@@ -1,0 +1,6 @@
+./dist/
+./__pycache__/
+*.pyc
+*.log
+*.buildinfo
+./Implug.egg-info/
